@@ -1,6 +1,6 @@
 
 require('./settings')
-const { default: ElgazarBotConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto } = require("@adiwajshing/baileys")
+const { default: AbdohanyBotConnect, useSingleFileAuthState, DisconnectReason, fetchLatestBaileysVersion, generateForwardMessageContent, prepareWAMessageMedia, generateWAMessageFromContent, generateMessageID, downloadContentFromMessage, makeInMemoryStore, jidDecode, proto } = require("@adiwajshing/baileys")
 const { state, saveState } = useSingleFileAuthState(`${sessionName}.json`)
 const pino = require('pino')
 const { Boom } = require('@hapi/boom')
@@ -69,7 +69,7 @@ if (global.db) setInterval(async () => {
   }, 30 * 1000)
 
 async function startElgazarBot() {
-    const ElgazarBot = ElgazarBotConnect({
+    const AbdohanyBot = AbdohanyBotConnect({
         logger: pino({ level: 'silent' }),
         printQRInTerminal: true,
         browser: ['Cheems Bot MD','Safari','1.0.0'],
@@ -79,34 +79,34 @@ async function startElgazarBot() {
     store.bind(ElgazarBot.ev)
     
     // anticall auto block
-    ElgazarBot.ws.on('CB:call', async (json) => {
+    AbdohanyBot.ws.on('CB:call', async (json) => {
     const callerId = json.content[0].attrs['call-creator']
     if (json.content[0].tag == 'offer') {
     let blockxeon = await ElgazarBot.sendContact(callerId, global.owner)
-    ElgazarBot.sendMessage(callerId, { text: `*نظام الحظر التلقائي!*\n*لا تتصل بالبوت*!\n*تواصل مع المطور لالغاء حظرك✨ !*`}, { quoted : blockxeon })
+    AbdohanyBot.sendMessage(callerId, { text: `*نظام الحظر التلقائي!*\n*لا تتصل بالبوت*!\n*تواصل مع المطور لالغاء حظرك✨ !*`}, { quoted : blockxeon })
     await sleep(8000)
-    await ElgazarBot.updateBlockStatus(callerId, "block")
+    await AbdohanyBot.updateBlockStatus(callerId, "block")
     }
     })
 
-    ElgazarBot.ev.on('messages.upsert', async chatUpdate => {
+    AbdohanyBot.ev.on('messages.upsert', async chatUpdate => {
         //console.log(JSON.stringify(chatUpdate, undefined, 2))
         try {
         mek = chatUpdate.messages[0]
         if (!mek.message) return
         mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
         if (mek.key && mek.key.remoteJid === 'status@broadcast') return
-        if (!ElgazarBot.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
+        if (!AbdohanyBot.public && !mek.key.fromMe && chatUpdate.type === 'notify') return
         if (mek.key.id.startsWith('BAE5') && mek.key.id.length === 16) return
-        m = smsg(ElgazarBot, mek, store)
-        require("./ElgazarBot-MD6")(ElgazarBot, m, chatUpdate, store)
+        m = smsg(AbdohanyBot, mek, store)
+        require("./AbdohanyBot-MD6")(AbdohanyBot, m, chatUpdate, store)
         } catch (e) {
             console.log(e)
         }
     })
     
     // Group Update
-    ElgazarBot.ev.on('groups.update', async pea => {
+    AbdohanyBot.ev.on('groups.update', async pea => {
        //console.log(pea)
     // Get Profile Picture Group
        try {
@@ -116,15 +116,15 @@ async function startElgazarBot() {
        }
        let lolXeon = { url : ppgc }
        if (pea[0].announce == true) {
-       ElgazarBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nThe Group Has Been Closed By Admin, Now Only Admin Can Send Messages !`, `${botname}`, lolXeon, [])
+       AbdohanyBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nThe Group Has Been Closed By Admin, Now Only Admin Can Send Messages !`, `${botname}`, lolXeon, [])
        } else if(pea[0].announce == false) {
-       ElgazarBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nThe Group Has Been Opened By Admin, Now Participants Can Send Messages !`, `${botname}`, lolXeon, [])
+       AbdohanyBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nThe Group Has Been Opened By Admin, Now Participants Can Send Messages !`, `${botname}`, lolXeon, [])
        } else if (pea[0].restrict == true) {
-       ElgazarBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nGroup Info Has Been Restricted, Now Only Admin Can Edit Group Info !`, `${botname}`, lolXeon, [])
+       AbdohanyBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nGroup Info Has Been Restricted, Now Only Admin Can Edit Group Info !`, `${botname}`, lolXeon, [])
        } else if (pea[0].restrict == false) {
-       ElgazarBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nGroup Info Has Been Opened, Now Participants Can Edit Group Info !`, `${botname}`, lolXeon, [])
+       AbdohanyBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nGroup Info Has Been Opened, Now Participants Can Edit Group Info !`, `${botname}`, lolXeon, [])
        } else {
-       ElgazarBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nGroup Subject Has Been Changed To *${pea[0].subject}*`, `${botname}`, lolXeon, [])
+       AbdohanyBot.send5ButImg(pea[0].id, `「 Group Settings Changed 」\n\nGroup Subject Has Been Changed To *${pea[0].subject}*`, `${botname}`, lolXeon, [])
      }
     })
     
@@ -136,7 +136,7 @@ return list[Math.floor(list.length * Math.random())]
 let documents = [doc1,doc2,doc3,doc4,doc5,doc6]
 let docs = pickRandom(documents)
 
-    ElgazarBot.ev.on('group-participants.update', async (anu) => {
+    AbdohanyBot.ev.on('group-participants.update', async (anu) => {
         console.log(anu)
         try {
             let metadata = await ElgazarBot.groupMetadata(anu.id)
@@ -214,8 +214,8 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
                     let unicorndoc = {key: {fromMe: false,"participant":"0@s.whatsapp.net", "remoteJid": "916909137213-1604595598@g.us"}, "message": {orderMessage: {itemCount: 9999999,status: 200, thumbnail: xeonbuffer, surface: 200, message: `${metadata.subject}`, orderTitle: 'xeon', sellerJid: '0@s.whatsapp.net'}}, contextInfo: {"forwardingScore":999,"isForwarded":true},sendEphemeral: true}
                     xeonbody = `⋆ مع السلامه 👋
 , @${xeonName.split("@")[0]}, 
+غور في داهيه المركبه اللي تودي 😴.
 ꔹ━━━━━ꔹ
-⋆ حد يبقي في جروب قمر زي جروب
 ${metadata.subject} ويغادر😂.
 ꔹ━━━━━ꔹ
 ⋆ عدد الاعضاء..
@@ -247,7 +247,7 @@ sourceUrl: `${websitex}`,
 mediaUrl: `${websitex}`
 }}
 }
-ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
+AbdohanyBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
                              
                 }
             }
@@ -256,7 +256,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
         }
     })
     // Setting
-    ElgazarBot.decodeJid = (jid) => {
+    AbdohanyBot.decodeJid = (jid) => {
         if (!jid) return jid
         if (/:\d+@/gi.test(jid)) {
             let decode = jidDecode(jid) || {}
@@ -264,16 +264,16 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
         } else return jid
     }
     
-    ElgazarBot.ev.on('contacts.update', update => {
+    AbdohanyBot.ev.on('contacts.update', update => {
         for (let contact of update) {
-            let id = ElgazarBot.decodeJid(contact.id)
+            let id = AbdohanyBot.decodeJid(contact.id)
             if (store && store.contacts) store.contacts[id] = { id, name: contact.notify }
         }
     })
 
-    ElgazarBot.getName = (jid, withoutContact  = false) => {
+    AbdohanyBot.getName = (jid, withoutContact  = false) => {
         id = ElgazarBot.decodeJid(jid)
-        withoutContact = ElgazarBot.withoutContact || withoutContact 
+        withoutContact = AbdohanyBot.withoutContact || withoutContact 
         let v
         if (id.endsWith("@g.us")) return new Promise(async (resolve) => {
             v = store.contacts[id] || {}
@@ -283,13 +283,13 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
         else v = id === '0@s.whatsapp.net' ? {
             id,
             name: 'WhatsApp'
-        } : id === ElgazarBot.decodeJid(ElgazarBot.user.id) ?
-            ElgazarBot.user :
+        } : id === AbdohanyBot.decodeJid(ElgazarBot.user.id) ?
+            AbdohanyBot.user :
             (store.contacts[id] || {})
             return (withoutContact ? '' : v.name) || v.subject || v.verifiedName || PhoneNumber('+' + jid.replace('@s.whatsapp.net', '')).getNumber('international')
     }
     
-        ElgazarBot.sendContact = async (jid, kon, quoted = '', opts = {}) => {
+        AbdohanyBot.sendContact = async (jid, kon, quoted = '', opts = {}) => {
 	let list = []
 	for (let i of kon) {
 	    list.push({
@@ -297,11 +297,11 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
 	    	vcard: `BEGIN:VCARD\nVERSION:3.0\nN:${await ElgazarBot.getName(i)}\nFN:${await ElgazarBot.getName(i)}\nitem1.TEL;waid=${i}:${i}\nitem1.X-ABLabel:Click here to chat\nitem2.EMAIL;type=INTERNET:${ytname}\nitem2.X-ABLabel:YouTube\nitem3.URL:${socialm}\nitem3.X-ABLabel:GitHub\nitem4.ADR:;;${location};;;;\nitem4.X-ABLabel:Region\nEND:VCARD`
 	    })
 	}
-	ElgazarBot.sendMessage(jid, { contacts: { displayName: `${list.length} Kontak`, contacts: list }, ...opts }, { quoted })
+	AbdohanyBot.sendMessage(jid, { contacts: { displayName: `${list.length} Kontak`, contacts: list }, ...opts }, { quoted })
     }
     
-    ElgazarBot.setStatus = (status) => {
-        ElgazarBot.query({
+    AbdohanyBot.setStatus = (status) => {
+        AbdohanyBot.query({
             tag: 'iq',
             attrs: {
                 to: '@s.whatsapp.net',
@@ -317,11 +317,11 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
         return status
     }
 	
-    ElgazarBot.public = true
+    AbdohanyBot.public = true
 
-    ElgazarBot.serializeM = (m) => smsg(ElgazarBot, m, store)
+    AbdohanyBot.serializeM = (m) => smsg(AbdohanyBot, m, store)
 
-    ElgazarBot.ev.on('connection.update', async (update) => {
+    AbdohanyBot.ev.on('connection.update', async (update) => {
         const { connection, lastDisconnect } = update	    
         if (connection === 'close') {
         let reason = new Boom(lastDisconnect?.error)?.output.statusCode
@@ -337,7 +337,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
         console.log('Connected...', update)
     })
 
-    ElgazarBot.ev.on('creds.update', saveState)
+    AbdohanyBot.ev.on('creds.update', saveState)
 
     // Add Other
 
@@ -349,25 +349,25 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
       * @param {*} quoted
       * @param {*} options
       */
-     ElgazarBot.sendFileUrl = async (jid, url, caption, quoted, options = {}) => {
+     AbdohanyBot.sendFileUrl = async (jid, url, caption, quoted, options = {}) => {
       let mime = '';
       let res = await axios.head(url)
       mime = res.headers['content-type']
       if (mime.split("/")[1] === "gif") {
-     return ElgazarBot.sendMessage(jid, { video: await getBuffer(url), caption: caption, gifPlayback: true, ...options}, { quoted: quoted, ...options})
+     return AbdohanyBot.sendMessage(jid, { video: await getBuffer(url), caption: caption, gifPlayback: true, ...options}, { quoted: quoted, ...options})
       }
       let type = mime.split("/")[0]+"Message"
       if(mime === "application/pdf"){
-     return ElgazarBot.sendMessage(jid, { document: await getBuffer(url), mimetype: 'application/pdf', caption: caption, ...options}, { quoted: quoted, ...options })
+     return AbdohanyBot.sendMessage(jid, { document: await getBuffer(url), mimetype: 'application/pdf', caption: caption, ...options}, { quoted: quoted, ...options })
       }
       if(mime.split("/")[0] === "image"){
-     return ElgazarBot.sendMessage(jid, { image: await getBuffer(url), caption: caption, ...options}, { quoted: quoted, ...options})
+     return AbdohanyBot.sendMessage(jid, { image: await getBuffer(url), caption: caption, ...options}, { quoted: quoted, ...options})
       }
       if(mime.split("/")[0] === "video"){
-     return ElgazarBot.sendMessage(jid, { video: await getBuffer(url), caption: caption, mimetype: 'video/mp4', ...options}, { quoted: quoted, ...options })
+     return AbdohanyBot.sendMessage(jid, { video: await getBuffer(url), caption: caption, mimetype: 'video/mp4', ...options}, { quoted: quoted, ...options })
       }
       if(mime.split("/")[0] === "audio"){
-     return ElgazarBot.sendMessage(jid, { audio: await getBuffer(url), caption: caption, mimetype: 'audio/mpeg', ...options}, { quoted: quoted, ...options })
+     return AbdohanyBot.sendMessage(jid, { audio: await getBuffer(url), caption: caption, mimetype: 'audio/mpeg', ...options}, { quoted: quoted, ...options })
       }
       }
 
@@ -381,7 +381,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
       *@param [*] sections
       *@param {*} quoted
       */
-        ElgazarBot.sendListMsg = (jid, text = '', footer = '', title = '' , butText = '', sects = [], quoted) => {
+        AbdohanyBot.sendListMsg = (jid, text = '', footer = '', title = '' , butText = '', sects = [], quoted) => {
         let sections = sects
         var listMes = {
         text: text,
@@ -390,7 +390,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
         buttonText: butText,
         sections
         }
-        ElgazarBot.sendMessage(jid, listMes, { quoted: quoted })
+        AbdohanyBot.sendMessage(jid, listMes, { quoted: quoted })
         }
 
     /** Send Button 5 Message
@@ -401,14 +401,14 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} button
      * @returns 
      */
-        ElgazarBot.send5ButMsg = (jid, text = '' , footer = '', but = []) =>{
+        AbdohanyBot.send5ButMsg = (jid, text = '' , footer = '', but = []) =>{
         let templateButtons = but
         var templateMessage = {
         text: text,
         footer: footer,
         templateButtons: templateButtons
         }
-        ElgazarBot.sendMessage(jid, templateMessage)
+        AbdohanyBot.sendMessage(jid, templateMessage)
         }
 
     /** Send Button 5 Image
@@ -421,7 +421,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options
      * @returns
      */
-    ElgazarBot.send5ButImg = async (jid , text = '' , footer = '', img, but = [], options = {}) =>{
+    AbdohanyBot.send5ButImg = async (jid , text = '' , footer = '', img, but = [], options = {}) =>{
         let message = await prepareWAMessageMedia({ image: img }, { upload: ElgazarBot.waUploadToServer })
         var template = generateWAMessageFromContent(jid, proto.Message.fromObject({
         templateMessage: {
@@ -433,7 +433,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
             }
             }
             }), options)
-            ElgazarBot.relayMessage(jid, template.message, { messageId: template.key.id })
+            AbdohanyBot.relayMessage(jid, template.message, { messageId: template.key.id })
     }
 
     /** Send Button 5 Video
@@ -446,7 +446,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options
      * @returns
      */
-    ElgazarBot.send5ButVid = async (jid , text = '' , footer = '', vid, but = [], options = {}) =>{
+    AbdohanyBot.send5ButVid = async (jid , text = '' , footer = '', vid, but = [], options = {}) =>{
         let message = await prepareWAMessageMedia({ video: vid }, { upload: ElgazarBot.waUploadToServer })
         var template = generateWAMessageFromContent(jid, proto.Message.fromObject({
         templateMessage: {
@@ -471,7 +471,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options
      * @returns
      */
-    ElgazarBot.send5ButGif = async (jid , text = '' , footer = '', gif, but = [], options = {}) =>{
+    AbdohanyBot.send5ButGif = async (jid , text = '' , footer = '', gif, but = [], options = {}) =>{
         let message = await prepareWAMessageMedia({ video: gif, gifPlayback: true }, { upload: ElgazarBot.waUploadToServer })
         var template = generateWAMessageFromContent(jid, proto.Message.fromObject({
         templateMessage: {
@@ -483,7 +483,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
             }
             }
             }), options)
-            ElgazarBot.relayMessage(jid, template.message, { messageId: template.key.id })
+            AbdohanyBot.relayMessage(jid, template.message, { messageId: template.key.id })
     }
 
     /**
@@ -495,7 +495,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} quoted 
      * @param {*} options 
      */
-    ElgazarBot.sendButtonText = (jid, buttons = [], text, footer, quoted = '', options = {}) => {
+    AbdohanyBot.sendButtonText = (jid, buttons = [], text, footer, quoted = '', options = {}) => {
         let buttonMessage = {
             text,
             footer,
@@ -503,7 +503,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
             headerType: 2,
             ...options
         }
-        ElgazarBot.sendMessage(jid, buttonMessage, { quoted, ...options })
+        AbdohanyBot.sendMessage(jid, buttonMessage, { quoted, ...options })
     }
     
     /**
@@ -514,7 +514,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options 
      * @returns 
      */
-    ElgazarBot.sendText = (jid, text, quoted = '', options) => ElgazarBot.sendMessage(jid, { text: text, ...options }, { quoted })
+    AbdohanyBot.sendText = (jid, text, quoted = '', options) => ElgazarBot.sendMessage(jid, { text: text, ...options }, { quoted })
 
     /**
      * 
@@ -525,9 +525,9 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options 
      * @returns 
      */
-    ElgazarBot.sendImage = async (jid, path, caption = '', quoted = '', options) => {
+    AbdohanyBot.sendImage = async (jid, path, caption = '', quoted = '', options) => {
 	let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-        return await ElgazarBot.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
+        return await AbdohanyBot.sendMessage(jid, { image: buffer, caption: caption, ...options }, { quoted })
     }
 
     /**
@@ -539,9 +539,9 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options 
      * @returns 
      */
-    ElgazarBot.sendVideo = async (jid, path, caption = '', quoted = '', gif = false, options) => {
+    AbdohanyBot.sendVideo = async (jid, path, caption = '', quoted = '', gif = false, options) => {
         let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-        return await ElgazarBot.sendMessage(jid, { video: buffer, caption: caption, gifPlayback: gif, ...options }, { quoted })
+        return await AbdohanyBot.sendMessage(jid, { video: buffer, caption: caption, gifPlayback: gif, ...options }, { quoted })
     }
 
     /**
@@ -553,9 +553,9 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options 
      * @returns 
      */
-    ElgazarBot.sendAudio = async (jid, path, quoted = '', ptt = false, options) => {
+    AbdohanyBot.sendAudio = async (jid, path, quoted = '', ptt = false, options) => {
         let buffer = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
-        return await ElgazarBot.sendMessage(jid, { audio: buffer, ptt: ptt, ...options }, { quoted })
+        return await AbdohanyBot.sendMessage(jid, { audio: buffer, ptt: ptt, ...options }, { quoted })
     }
 
     /**
@@ -576,7 +576,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options 
      * @returns 
      */
-    ElgazarBot.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
+    AbdohanyBot.sendImageAsSticker = async (jid, path, quoted, options = {}) => {
         let buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
         let buffer
         if (options && (options.packname || options.author)) {
@@ -585,7 +585,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
             buffer = await imageToWebp(buff)
         }
 
-        await ElgazarBot.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
+        await AbdohanyBot.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
         return buffer
     }
 
@@ -597,7 +597,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options 
      * @returns 
      */
-    ElgazarBot.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
+    AbdohanyBot.sendVideoAsSticker = async (jid, path, quoted, options = {}) => {
         let buff = Buffer.isBuffer(path) ? path : /^data:.*?\/.*?;base64,/i.test(path) ? Buffer.from(path.split`,`[1], 'base64') : /^https?:\/\//.test(path) ? await (await getBuffer(path)) : fs.existsSync(path) ? fs.readFileSync(path) : Buffer.alloc(0)
         let buffer
         if (options && (options.packname || options.author)) {
@@ -606,7 +606,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
             buffer = await videoToWebp(buff)
         }
 
-        await ElgazarBot.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
+        await AbdohanyBot.sendMessage(jid, { sticker: { url: buffer }, ...options }, { quoted })
         return buffer
     }
 	
@@ -617,7 +617,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} attachExtension 
      * @returns 
      */
-    ElgazarBot.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
+    AbdohanyBot.downloadAndSaveMediaMessage = async (message, filename, attachExtension = true) => {
         let quoted = message.msg ? message.msg : message
         let mime = (message.msg || message).mimetype || ''
         let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
@@ -633,7 +633,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
         return trueFileName
     }
 
-    ElgazarBot.downloadMediaMessage = async (message) => {
+    AbdohanyBot.downloadMediaMessage = async (message) => {
         let mime = (message.msg || message).mimetype || ''
         let messageType = message.mtype ? message.mtype.replace(/Message/gi, '') : mime.split('/')[0]
         const stream = await downloadContentFromMessage(message, messageType)
@@ -655,7 +655,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options 
      * @returns 
      */
-    ElgazarBot.sendMedia = async (jid, path, fileName = '', caption = '', quoted = '', options = {}) => {
+    AbdohanyBot.sendMedia = async (jid, path, fileName = '', caption = '', quoted = '', options = {}) => {
         let types = await ElgazarBot.getFile(path, true)
            let { mime, ext, res, data, filename } = types
            if (res && res.status !== 200 || file.length <= 65536) {
@@ -676,7 +676,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
        else if (/video/.test(mime)) type = 'video'
        else if (/audio/.test(mime)) type = 'audio'
        else type = 'document'
-       await ElgazarBot.sendMessage(jid, { [type]: { url: pathFile }, caption, mimetype, fileName, ...options }, { quoted, ...options })
+       await AbdohanyBot.sendMessage(jid, { [type]: { url: pathFile }, caption, mimetype, fileName, ...options }, { quoted, ...options })
        return fs.promises.unlink(pathFile)
        }
 
@@ -688,7 +688,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
      * @param {*} options 
      * @returns 
      */
-    ElgazarBot.copyNForward = async (jid, message, forceForward = false, options = {}) => {
+    AbdohanyBot.copyNForward = async (jid, message, forceForward = false, options = {}) => {
         let vtype
 		if (options.readViewOnce) {
 			message.message = message.message && message.message.ephemeralMessage && message.message.ephemeralMessage.message ? message.message.ephemeralMessage.message : (message.message || undefined)
@@ -719,11 +719,11 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
                 }
             } : {})
         } : {})
-        await ElgazarBot.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id })
+        await AbdohanyBot.relayMessage(jid, waMessage.message, { messageId:  waMessage.key.id })
         return waMessage
     }
 
-    ElgazarBot.cMod = (jid, copy, text = '', sender = ElgazarBot.user.id, options = {}) => {
+    AbdohanyBot.cMod = (jid, copy, text = '', sender = ElgazarBot.user.id, options = {}) => {
         //let copy = message.toJSON()
 		let mtype = Object.keys(copy.message)[0]
 		let isEphemeral = mtype === 'ephemeralMessage'
@@ -744,7 +744,7 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
 		if (copy.key.remoteJid.includes('@s.whatsapp.net')) sender = sender || copy.key.remoteJid
 		else if (copy.key.remoteJid.includes('@broadcast')) sender = sender || copy.key.remoteJid
 		copy.key.remoteJid = jid
-		copy.key.fromMe = sender === ElgazarBot.user.id
+		copy.key.fromMe = sender === AbdohanyBot.user.id
 
         return proto.WebMessageInfo.fromObject(copy)
     }
@@ -775,10 +775,10 @@ ElgazarBot.sendMessage(anu.id, buttonMessage, {quoted:unicorndoc})
 
     }
 
-    return ElgazarBot
+    return AbdohanyBot
 }
 
-startElgazarBot()
+startAbdohanyBot()
 
 
 let file = require.resolve(__filename)
